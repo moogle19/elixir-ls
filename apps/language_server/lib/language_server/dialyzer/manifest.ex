@@ -127,7 +127,11 @@ defmodule ElixirLS.LanguageServer.Dialyzer.Manifest do
   end
 
   def load_elixir_plt() do
-    apply(:dialyzer_plt, :from_file, [to_charlist(elixir_plt_path())])
+    if function_exported?(:dialyzer_cplt, :from_file, 1) do
+      apply(:dialyzer_cplt, :from_file, [to_charlist(elixir_plt_path())])
+    else
+      apply(:dialyzer_plt, :from_file, [to_charlist(elixir_plt_path())])
+    end
   rescue
     _ -> build_elixir_plt()
   catch
@@ -175,7 +179,7 @@ defmodule ElixirLS.LanguageServer.Dialyzer.Manifest do
     )
 
     JsonRpc.show_message(:info, "Saved Elixir PLT to #{elixir_plt_path()}")
-    :dialyzer_plt.from_file(to_charlist(elixir_plt_path()))
+    load_elixir_plt()
   end
 
   defp otp_vsn() do

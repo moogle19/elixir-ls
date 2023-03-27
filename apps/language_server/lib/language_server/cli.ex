@@ -17,8 +17,16 @@ defmodule ElixirLS.LanguageServer.CLI do
       metadata: []
     )
 
-    {:ok, _} = Logger.add_backend(Logger.Backends.JsonRpc)
-    :ok = Logger.remove_backend(:console, flush: true)
+    :ok = case Logger.add_backend(Logger.Backends.JsonRpc) do
+      {:ok, _} -> :ok
+      {:error, :already_present} -> :ok
+      other -> other
+    end
+
+    :ok = case Logger.remove_backend(:console, flush: true) do
+      {:error, :not_found} -> :ok
+      other -> other
+    end
 
     Launch.start_mix()
 
