@@ -5,7 +5,7 @@ defmodule ElixirLS.Utils.PacketStream do
 
   def stream(pid \\ Process.group_leader()) do
     if is_pid(pid) do
-      :ok = :io.setopts(pid, binary: true, encoding: :latin1)
+    #  :ok = :io.setopts(pid, binary: true, encoding: :latin1)
     end
 
     Stream.resource(
